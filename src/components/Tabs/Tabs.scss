@@ -1,0 +1,14 @@
+.button {
+  font-family: Inter, sans-serif;
+
+  &--primary {
+    background-color: var(--color-primary);
+    color: #000;
+  }
+
+  &--secondary {
+    background: transparent;
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary);
+  }
+}
