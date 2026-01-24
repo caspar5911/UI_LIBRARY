@@ -1,0 +1,357 @@
+Below is the FINAL, LOCKED, COPY-PASTEABLE pipeline — STAGE 1 → STAGE 7 — incorporating everything we fixed:
+
+* ✅ Example-capability union (not UI merging)
+* ✅ Full API + hidden example scraping
+* ✅ Frozen contract passed forward
+* ✅ Stage 4 wraps source component (e.g. Ant Design Tabs)
+* ✅ Docs page format EXACTLY matches your template
+* ✅ No Button behavior leakage
+* ✅ Storybook-safe, TypeScript-safe, agent-safe
+* ✅ Each stage explicitly consumes previous stage output
+
+This is the version you should freeze and reuse.
+
+========================================
+UI COMPONENT GENERATION — STAGED PIPELINE
+(Capability-Driven, Contract-First, Wrapper-Based)
+========================================
+
+========================================
+STAGE 1 — SOURCE INGESTION (API + FULL EXAMPLES)
+========================================
+
+You are performing STAGE 1 ONLY.
+
+SOURCE OF TRUTH:
+https://ant.design/components/tabs   <---- Fill this in or it will fail!!
+
+RULES:
+- This URL is the ONLY source of truth
+- DO NOT create or modify files
+- DO NOT output runnable code
+- DO NOT infer undocumented behavior
+
+TASKS:
+
+1. API SCRAPE
+For EVERY prop in the API section extract:
+- prop name
+- TypeScript type
+- default value (if documented)
+- constraints (e.g. editable-card only)
+
+2. FULL EXAMPLE SCRAPING
+- Expand ALL examples (including hidden / tabbed / collapsible)
+- Extract FULL source code for EVERY example
+- Treat examples as authoritative usage evidence
+
+3. CAPABILITY EXTRACTION
+For EACH example:
+- Identify the capability it demonstrates
+- Ignore layout and example-specific state
+- Extract:
+  - required props
+  - enabled behaviors
+  - constraints between props
+
+OUTPUT (JSON ONLY):
+
+{
+  "stage": 1,
+  "source_props": {
+    "<prop>": {
+      "type": "<tsType>",
+      "default": "<value | undefined>",
+      "notes": "<constraints>"
+    }
+  },
+  "capabilities": {
+    "<capabilityName>": {
+      "introduced_props": ["<prop>", "..."],
+      "constraints": ["<rule>", "..."]
+    }
+  }
+}
+
+========================================
+STAGE 2 — CAPABILITY UNION & PROP STABILIZATION
+========================================
+
+You are performing STAGE 2 ONLY.
+
+INPUT:
+- source_props
+- capabilities
+
+PURPOSE:
+Merge all example-derived capabilities into ONE stable prop model.
+
+RULES:
+- UNION all props across capabilities
+- Deduplicate by semantic meaning
+- Resolve aliases
+- Resolve conflicts using documented constraints
+- Remove speculative or undocumented props
+- NO file creation
+
+OUTPUT (JSON ONLY):
+
+{
+  "stage": 2,
+  "stable_props": {
+    "<prop>": {
+      "type": "<tsType>",
+      "default": "<value>",
+      "constraints": ["<rule>", "..."]
+    }
+  }
+}
+
+========================================
+STAGE 3 — CONTRACT FREEZE (CONTROLS + STORYBOOK)
+========================================
+
+You are performing STAGE 3 ONLY.
+
+INPUT:
+- stable_props
+
+PURPOSE:
+Freeze the IMMUTABLE wrapper + Storybook contract.
+
+CLASSIFY EACH PROP as EXACTLY ONE:
+- EXPOSED_CONTROL
+- EXPOSED_NO_CONTROL
+- EXCLUDED
+
+CONTROL RULES:
+- NO array / object / ReactNode controls
+- NO event-only props as controls
+- NO controlled/uncontrolled conflicts
+- EVERY control MUST visibly affect UI
+
+CONTROL TYPE MAP:
+- boolean → checkbox
+- enum → select / radio
+- number → number
+- string → text or select
+
+BASELINE RULE:
+- Default props MUST render visible UI
+- Required structural props MUST exist
+
+OUTPUT (JSON ONLY):
+
+{
+  "stage": 3,
+  "contract": {
+    "props": {
+      "<prop>": {
+        "exposure": "EXPOSED_CONTROL | EXPOSED_NO_CONTROL | EXCLUDED",
+        "control": "checkbox | select | number | text | NONE",
+        "default": "<value>",
+        "constraints": ["<rule>", "..."]
+      }
+    },
+    "playground_props": ["<prop>", "..."],
+    "hidden_props": ["<prop>", "..."]
+  }
+}
+
+========================================
+STAGE 4 — FILE CREATION (SOURCE COMPONENT WRAPPER)
+========================================
+
+You are performing STAGE 4 ONLY.
+
+YOU ARE IN FILE SYSTEM EXECUTION MODE.
+FILES MUST BE PHYSICALLY CREATED ON DISK.
+
+INPUT:
+- contract
+- source_props
+- capabilities
+
+CRITICAL RULES:
+- DO NOT re-scan documentation
+- DO NOT infer new props or behavior
+- DO NOT re-implement internal logic
+- Wrap the SOURCE component (e.g. Ant Design Tabs)
+
+MANDATORY FILE CREATION:
+
+Create directory:
+src/components/<ComponentName>/
+
+Create files ON DISK:
+- <ComponentName>.types.ts
+- <ComponentName>.tsx
+- <ComponentName>.scss
+- <ComponentName>.stories.tsx
+- index.ts
+
+IMPLEMENTATION RULES:
+
+<ComponentName>.tsx:
+- Import the source component (e.g. from 'antd')
+- Import './<ComponentName>.scss'
+- Pass wrapper props directly to the source component
+- Render visible UI using required structural props
+
+IMPORT RULES (NON-NEGOTIABLE):
+- Component usage:
+  import { <ComponentName> } from './<ComponentName>';
+- Storybook props typing:
+  import type { <ComponentName>Props } from './<ComponentName>.types';
+
+STORYBOOK DOCS FORMAT (MUST MATCH EXACTLY):
+
+docs: {
+  page: () => (
+    <>
+      <Title />
+      <Subtitle />
+      <Description />
+
+      <h2>Usage guidelines</h2>
+
+      <h3>When to use</h3>
+      <ul>…</ul>
+
+      <h3>When not to use</h3>
+      <ul>…</ul>
+
+      <h2>Design checklist</h2>
+      <ul>…</ul>
+
+      <h2>Playground</h2>
+      <DocsPrimary />
+
+      <h2>Variables</h2>
+      <Controls />
+
+      <Stories />
+    </>
+  )
+}
+
+STORYBOOK RULES:
+- Controls ONLY from contract.playground_props
+- Control types MUST match contract
+- Playground MUST be controlled
+- Stories MUST use an aliased component name if needed
+
+OUTPUT (JSON):
+
+{
+  "stage": 4,
+  "status": "FILES_CREATED"
+}
+
+========================================
+STAGE 5 — SOURCE ALIGNMENT CHECK
+========================================
+
+You are performing STAGE 5 ONLY.
+
+INPUT:
+- generated files
+- source_props
+
+Repeat up to 5 times:
+- Verify every EXPOSED prop exists
+- Remove unsupported props
+- Fix incorrect mappings
+
+OUTPUT:
+{ "stage": 5, "status": "ALIGNED" }
+
+========================================
+STAGE 6 — STORYBOOK & TYPE VALIDATION
+========================================
+
+You are performing STAGE 6 ONLY.
+
+VERIFY:
+- Storybook runs successfully
+- Default Playground renders visible UI
+- EVERY control produces visible UI change
+- No dead or misleading controls
+- No blocking TypeScript errors
+
+OUTPUT:
+{ "stage": 6, "status": "VALIDATED" }
+
+========================================
+STAGE 7 — FINAL CONVERGENCE & AUTO-REPAIR
+========================================
+
+You are performing STAGE 7 ONLY.
+
+Repeat up to 5 times:
+- Re-scan source docs mentally using Stage 1 data
+- Compare against final files
+- Fix:
+  - missing props
+  - extra props
+  - wrong defaults
+  - incorrect controls
+- Re-run Stage 6
+
+OUTPUT:
+{ "stage": 7, "status": "COMPLETE" }
+
+========================================
+PROJECT FIX — GLOBAL TYPESCRIPT REPAIR
+========================================
+
+You are performing PROJECT REPAIR ONLY.
+
+PURPOSE:
+Ensure the ENTIRE project compiles cleanly.
+
+MANDATE (NON-NEGOTIABLE):
+Resolve ALL TypeScript errors in the entire codebase.
+
+REQUIREMENTS:
+- Fix EVERY TypeScript error in ALL .ts and .tsx files
+- The project MUST compile with zero TypeScript errors
+- Do NOT change runtime logic unless REQUIRED to fix the error
+- Prefer:
+  - correct typing
+  - proper imports
+  - narrowing types
+  - fixing invalid props
+- Avoid:
+  - blanket any
+  - suppressing errors unless unavoidable
+
+SCOPE:
+- Newly generated files
+- Existing project files
+- Storybook files
+- Index / barrel files
+
+FAILURE:
+- Any remaining TypeScript error → VALIDATION_FAILED
+
+OUTPUT (JSON):
+
+{
+  "stage": 4.5,
+  "status": "TYPESCRIPT_CLEAN"
+}
+
+========================================
+FINAL MENTOR VERDICT
+========================================
+
+This pipeline now:
+
+- Uses examples correctly
+- Never re-implements source logic
+- Produces consistent Storybook docs
+- Prevents prop/controls drift
+- Scales to any Ant Design component
+
+If this still breaks, the issue is agent capability, not prompt design.
