@@ -2,7 +2,7 @@ You are performing STORYBOOK STORIES REFACTOR ONLY for <componentName>.
 Repeatable (idempotent). Do NOT assume any prior run.
 
 SOURCE OF TRUTH (Ant Design):
-https://ant.design/components/button
+https://ant.design/components/date-picker
 
 TARGET FILE (ONLY FILE YOU MAY MODIFY):
 src/components/<componentName>/<componentName>.stories.tsx
@@ -15,90 +15,113 @@ HARD SCOPE:
 - Ignore all other sections (API, etc.).
 - You may ONLY modify the TARGET FILE. If any other file needs changes → FAIL.
 
-DEPENDENCY SAFETY (HARD RULE — PREVENTS THE SAME ISSUE):
-- You MUST NOT add/install packages.
+DEPENDENCY SAFETY (HARD RULE):
+- You MUST NOT add/install packages or edit package.json.
 - You MUST NOT add .d.ts files.
-- You MUST NOT import from any package that is not already present in package.json / node_modules.
-- If an Example requires an external package/theme/provider not already available:
-  - DO NOT replicate it verbatim.
-  - Implement a LOCAL-EQUIVALENT story that demonstrates the same concept using only existing deps.
-  - Mark the story name with "(Adapted)" and include a short comment explaining what dependency was avoided.
+- You MUST NOT import from any package not already present in node_modules.
+- If an Example requires a missing external package/theme/provider:
+  - Implement a LOCAL-EQUIVALENT story using existing deps only
+  - Story export name must include `Adapted`
+  - Add a 1-line comment stating what dependency was avoided
 
 MANDATE:
-- You MUST rewrite/merge the TARGET FILE so Storybook stories mirror the docs Examples.
+- Rewrite/merge the TARGET FILE so stories mirror the docs "Examples".
 - This work is NOT complete until coverage reaches TOTAL/TOTAL.
-- Coverage counts adapted stories as covered if they map to a docs Example title.
+- Coverage counts Adapted stories as covered if they clearly map to that Example title.
 
 TEMPLATE (NON-NEGOTIABLE):
-The story file MUST follow my template structure:
-- CSF3 with `const meta = { ... } satisfies Meta<Args>;`
-- addon-docs blocks + docs.page sections in this exact order:
-  Title, Subtitle, Description,
-  Usage guidelines (When to use / When not to use),
-  Design checklist,
-  Playground (DocsPrimary),
-  Variables (Controls),
-  Stories
-- `docs.source.transform` with `type: "dynamic"` generating JSX from args
-- 1+ story per Example (no placeholder stories)
+- Use my CSF3 template format (Meta<Args> + docs.page + dynamic source.transform)
+- 1+ story export per Example (NO placeholders)
 
-EXAMPLE IMPLEMENTATION RULES:
-- Each story MUST match the Example’s UI behavior and structure as closely as possible:
-  - same variant intent (primary/dashed/link/text)
-  - same state behavior (loading/disabled/danger)
-  - same layout (group/space)
-  - same icons if already available (e.g. @ant-design/icons)
-- If a visual effect is tied to an unavailable theme/provider:
-  - replicate the behavior concept using built-in props or CSS-in-story ONLY
-  - do not introduce new global CSS files or shared utilities
+DATEPICKER-SPECIFIC NOTE (STILL GENERIC IN BEHAVIOR):
+- Many Examples are for multiple demo surfaces (e.g., DatePicker vs RangePicker, presets, disabled dates, showTime, variants).
+- Implement stories using the SAME surface shown in the Example (DatePicker/RangePicker/etc.).
+- If the Example demonstrates a subcomponent surface, your story must use that subcomponent surface.
 
-PRE-FLIGHT CHECK (REQUIRED — BEFORE EDITING):
-- Scan the docs Examples you plan to implement and list any imports/providers/packages they appear to require.
-- Verify each required package exists locally.
-- If missing, plan an adapted implementation.
+HARD EXTRACTION REQUIREMENT (NO FAKE COUNTS):
+- Build the Examples list by reading the "Examples" section and extracting:
+  - Example title text (exact)
+  - The demo surface used (e.g., DatePicker, RangePicker, TimePicker if present, etc.)
+- If you cannot extract titles reliably, STOP AND FAIL (do not proceed with partial guesses).
 
-OUTPUT JSON 1 — EXAMPLES_INDEX:
+OUTPUT JSON 1 — EXAMPLES_INDEX (MUST BE REAL):
 {
   "component": "<componentName>",
   "totalExamples": <TOTAL>,
-  "exampleTitles": ["..."]
+  "exampleTitles": ["..."],
+  "exampleSurfaces": [{ "title": "...", "surface": "DatePicker|RangePicker|Other" }]
 }
 
-OUTPUT JSON 2 — DEPENDENCY_CHECK:
+CURRENT FILE INDEX (REQUIRED):
+- Read the CURRENT TARGET FILE and list current story exports.
+
+OUTPUT JSON 2 — CURRENT_STORIES_INDEX:
 {
-  "missingDepsDetected": ["<pkgName>", "..."],
-  "examplesNeedingAdaptation": ["<Example title>", "..."]
+  "currentStoryExports": ["..."],
+  "currentStoryCount": <N>
 }
 
-OUTPUT JSON 3 — COVERAGE_PLAN:
+COVERAGE (REQUIRED):
+- coveredExamples: Example titles that have matching story exports (exact title match OR clearly mapped name)
+- missingExamples: remaining titles
+
+OUTPUT JSON 3 — COVERAGE:
 {
-  "storiesPlanned": [
-    { "exampleTitle": "...", "storyExport": "...", "mode": "exact|adapted" }
-  ]
+  "coveredCount": <X>,
+  "totalExamples": <TOTAL>,
+  "coverage": "<X>/<TOTAL>",
+  "missingExamples": ["..."]
 }
+
+HARD EXECUTION GATE (PREVENTS “IT DID NOTHING”):
+- If coverage is not TOTAL/TOTAL, you MUST:
+  - add story exports for ALL missingExamples
+  - and increase currentStoryCount by at least (TOTAL - X)
+- If the file changes but story export count does not increase when missingExamples existed → FAIL.
 
 EXECUTION:
-- Update TARGET FILE to:
-  - add/fix stories for all missing Examples (exact or adapted)
-  - keep correct stories
-  - remove stories that don't map to any Example title
-- If coverage already TOTAL/TOTAL:
-  - still normalize to the template if it deviates
-  - still re-check dependencies and adapt if needed
+- Add/fix stories so every Example title is represented (exact or adapted).
+- Remove stories that do not map to any Example.
+- Keep the template structure intact.
+
+MODULE SHAPE + IMPORT SANITY (HARD — PREVENTS “UNABLE TO INDEX” / DUPLICATE IDENTIFIERS):
+- The stories file MUST be a single clean module:
+  - exactly ONE `const meta = { ... }`
+  - exactly ONE `export default meta`
+  - no stray pasted code after the final story export (only whitespace/comments allowed)
+- Imports must be deduped:
+  - exactly ONE import line for `Meta` and `StoryObj`
+  - do NOT import the same identifier twice (Meta, StoryObj, React, etc.)
+- If violated, normalize/fix these issues BEFORE making any example changes.
+
+STORYBOOK INDEXER GATE (HARD — CATCHES BABEL-ONLY FAILURES THAT `tsc` CAN MISS):
+- After edits, you MUST run BOTH checks:
+  1) npx tsc --noEmit
+  2) Storybook smoke/index check using the first command that exists (do not ask):
+     a) npm run storybook -- --smoke-test --quiet
+     b) npx storybook@latest dev --smoke-test --quiet
+     c) npx storybook@latest build --quiet
+- If output contains any of:
+  - "Unable to index"
+  - "Identifier 'X' has already been declared"
+  - "SyntaxError:"
+  then you MUST fix it by editing ONLY the TARGET FILE and re-run the Storybook check until clean.
 
 VALIDATION:
 - Run: npx tsc --noEmit
-- Fix TypeScript errors by changing ONLY the TARGET FILE.
+- Fix TS errors by changing ONLY the TARGET FILE.
 - If TS errors cannot be fixed without touching other files → FAIL.
 
 CHANGE VERIFICATION:
 - Run: git diff --name-only
-- If TARGET FILE is not changed when work was required → FAIL
+- If missingExamples existed and TARGET FILE is not changed → FAIL
 
 FINAL OUTPUT (JSON ONLY):
 {
   "status": "TYPESCRIPT_CLEAN",
   "component": "<componentName>",
-  "coverage": "<X>/<TOTAL>",
-  "adaptedExamples": ["..."]
+  "coverage": "<TOTAL>/<TOTAL>",
+  "adaptedExamples": ["..."],
+  "newStoryExportsAdded": <K>,
+  "storybookIndexOk": true
 }

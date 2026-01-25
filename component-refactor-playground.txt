@@ -2,7 +2,7 @@ You are performing STORYBOOK PLAYGROUND BEHAVIOR + CONTROLS SYNC ONLY for <compo
 Repeatable (idempotent). Do NOT assume any prior run.
 
 DOCS (SOURCE OF TRUTH):
-https://ant.design/components/radio
+https://ant.design/components/date-picker
 
 TARGET FILE (ONLY FILE YOU MAY MODIFY):
 src/components/<componentName>/<componentName>.stories.tsx
