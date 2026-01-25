@@ -1,0 +1,82 @@
+You are performing STORYBOOK PLAYGROUND BEHAVIOR + CONTROLS SYNC ONLY for <componentName>.
+Repeatable (idempotent). Do NOT assume any prior run.
+
+DOCS (SOURCE OF TRUTH):
+https://ant.design/components/radio
+
+TARGET FILE (ONLY FILE YOU MAY MODIFY):
+src/components/<componentName>/<componentName>.stories.tsx
+
+AUTONOMY:
+- No questions, no confirmations.
+
+EXTRACTION (API ONLY):
+- Read ONLY the "API" section.
+- Extract ALL API tables/subsections/types under "API".
+- Classify each extracted block as ONE of:
+  A) Component surface (renderable)  ✅ can be a surfaceMode option
+  B) Type-only block (interfaces/option objects/event types) ❌ NOT a surfaceMode option
+
+SURFACE RULE:
+- surfaceMode options MUST include ONLY renderable component surfaces (A).
+- Type-only blocks (B) MUST be represented indirectly via presets/controls feeding a renderable surface.
+
+GOAL:
+1) Controls coverage: every documented API prop/field is represented in argTypes (enabled OR disabled).
+2) Playground behavior: surfaceMode switching MUST render non-null and controls MUST affect output.
+3) Defaults: meta.args must use documented defaults when provided.
+4) Descriptions: argTypes descriptions MUST be meaningful (from API Description), not just types.
+
+MANDATE (EVERY RUN):
+A) Build API model:
+   - renderableSurfaces
+   - typeOnlyBlocks
+   - props per surface/type: name, description, type, default
+B) Update argTypes + meta.args:
+   - Add missing props/fields
+   - Fix wrong control types/options/defaults
+   - Remove undocumented controls (except story-only controls like surfaceMode/presets)
+
+   PROP DOC QUALITY (HARD REQUIREMENT):
+   For EVERY documented API prop/field in argTypes:
+   - argTypes.<prop>.description must reflect API Description meaning
+   - argTypes.<prop>.table.type.summary = API Type
+   - argTypes.<prop>.table.defaultValue.summary = API Default or "-"
+   - argTypes.<prop>.table.category = surface/type name
+   - If any description is only "boolean"/"string"/etc. → FAIL and rewrite
+
+C) Update meta.render:
+   - Add story-only control: surfaceMode (renderable surfaces only)
+   - Route by surfaceMode using the correct underlying implementation
+   - If a surface needs children/options, add presets (e.g. optionPreset) and use them in render
+   - Type-only fields feed into renderable surfaces via presets (NOT separate surfaceMode)
+
+CRITICAL RENDER SAFETY:
+- Prefer rendering the underlying library implementation per surface unless wrapper forwarding is confirmed.
+- Never pass props to a component if not documented for that surface.
+
+OUTPUT 1 (JSON ONLY, BEFORE EDITS) — PLAN:
+{
+  "component": "<componentName>",
+  "surfaces": { "renderable": <count>, "types": <count> },
+  "missingPropsTotal": <number>,
+  "needsPresets": true|false
+}
+
+APPLY CHANGES.
+
+OUTPUT 2 (JSON ONLY, AFTER EDITS) — RESULT:
+{
+  "component": "<componentName>",
+  "controlsCovered": true,
+  "descriptionsOk": true,
+  "rendersOk": true,
+  "tscNoEmitOk": true
+}
+
+HARD GATE:
+- All RESULT booleans must be true or FAIL.
+
+VALIDATION:
+- Run: npx tsc --noEmit
+- Fix TS errors until zero remain.

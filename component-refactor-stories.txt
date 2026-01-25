@@ -1,0 +1,85 @@
+You are performing STORYBOOK STORIES REFACTOR ONLY for <componentName>.
+This prompt MUST be repeatable and MUST NOT assume any prior run.
+
+SOURCE OF TRUTH (Ant Design):
+<PASTE_ANTD_COMPONENT_URL_HERE>
+
+TARGET FILE (ONLY FILE YOU MAY MODIFY):
+src/components/<componentName>/<componentName>.stories.tsx
+
+AUTONOMY:
+- No questions, no confirmations, no pausing.
+
+HARD SCOPE:
+- Extract examples ONLY from the page section labeled "Examples".
+- Ignore all other sections (API, etc.).
+- You may ONLY modify the TARGET FILE. If any other file needs changes → FAIL.
+
+MANDATE:
+- You MUST rewrite/merge the TARGET FILE so Storybook stories mirror the docs Examples.
+- This work is NOT complete until coverage reaches TOTAL/TOTAL.
+
+TEMPLATE (NON-NEGOTIABLE):
+The story file MUST follow my template structure:
+- CSF3 with `const meta = { ... } satisfies Meta<Args>;`
+- addon-docs blocks + docs.page sections in this exact order:
+  Title, Subtitle, Description,
+  Usage guidelines (When to use / When not to use),
+  Design checklist,
+  Playground (DocsPrimary),
+  Variables (Controls),
+  Stories
+- `docs.source.transform` with `type: "dynamic"` generating JSX from args
+- 1+ story per Example (no placeholder stories)
+
+CHECKS (REQUIRED — MUST OUTPUT):
+A) Extract Example titles from the "Examples" section and compute TOTAL:
+B) Read the CURRENT TARGET FILE and extract current story exports (e.g. `export const X`)
+C) Compute coverage:
+   - coveredExamples: Example titles that have matching stories (title match or clearly mapped)
+   - missingExamples: Example titles not yet represented
+   - coverage: "<coveredCount>/<totalExamples>"
+
+OUTPUT JSON 1 — EXAMPLES_INDEX:
+{
+  "component": "<componentName>",
+  "totalExamples": <TOTAL>,
+  "exampleTitles": ["..."]
+}
+
+OUTPUT JSON 2 — CURRENT_STORIES_INDEX:
+{
+  "currentStoryExports": ["..."],
+  "currentStoryCount": <N>
+}
+
+OUTPUT JSON 3 — COVERAGE:
+{
+  "coveredCount": <X>,
+  "totalExamples": <TOTAL>,
+  "coverage": "<X>/<TOTAL>",
+  "missingExamples": ["..."]
+}
+
+EXECUTION:
+- If coverage is not TOTAL/TOTAL:
+  - Update the TARGET FILE to add/fix stories so missingExamples are implemented
+  - Keep stories that already correctly match examples
+  - Remove stories that do not correspond to any Example
+- If coverage is already TOTAL/TOTAL:
+  - Still normalize the file to match the template if it deviates
+
+VALIDATION:
+- Run: npx tsc --noEmit
+- Fix any TS errors caused by story changes until ZERO errors remain.
+
+CHANGE VERIFICATION:
+- Run: git diff --name-only
+- If coverage was not TOTAL/TOTAL and TARGET FILE is not changed → FAIL
+
+FINAL OUTPUT (JSON ONLY):
+{
+  "status": "TYPESCRIPT_CLEAN",
+  "component": "<componentName>",
+  "coverage": "<X>/<TOTAL>"
+}

@@ -1,51 +1,23 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import React from 'react';
-import { PlusOutlined, DownloadOutlined } from '@ant-design/icons';
-import {{pascalCase name}} from './{{pascalCase name}}';
 
-import {
-  Title,
-  Subtitle,
-  Description,
-  Primary as DocsPrimary,
-  Controls,
-  Stories,
-} from '@storybook/addon-docs/blocks';
+import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+import { Title, Subtitle, Description, Primary as DocsPrimary, Controls, Stories } from "@storybook/addon-docs/blocks";
+import {{pascalCase componentName}} from "./{{pascalCase componentName}}";
 
+// Story-only args (none for strict Ant Design Radio)
+type StoryOnlyArgs = {};
+type Args = React.ComponentProps<typeof {{pascalCase componentName}}> & StoryOnlyArgs;
 
-/**
- * Storybook-only props (NOT passed to component)
- */
-type StoryOnlyArgs = {
-  iconChoice?: 'None' | 'Plus' | 'Download';
-};
-
-/**
- * What render() receives
- */
-type StoryRenderArgs = React.ComponentProps<typeof {{pascalCase name}}> & StoryOnlyArgs;
-
-const iconMap = {
-  None: null,
-  Plus: <PlusOutlined />,
-  Download: <DownloadOutlined />,
-} as const;
-
-const meta: Meta<typeof {{pascalCase name}}> = {
-  title: 'Components/{{pascalCase name}}',
-  component: {{pascalCase name}},
+const meta = {
+  title: "Components/{{pascalCase componentName}}",
+  component: {{pascalCase componentName}},
   args: {
-    children: '{{pascalCase name}}',
-    intent: 'primary',
-    size: 'middle',
-    loading: false,
+    checked: false,
     disabled: false,
-    isRounded: false,
-    fullWidth: false,
-    // @ts-expect-error: iconChoice is a Storybook-only control
-    iconChoice: 'None',
+    value: undefined,
+    defaultChecked: false,
+    children: "Radio",
   },
-
   parameters: {
     docs: {
       page: () => (
@@ -53,150 +25,71 @@ const meta: Meta<typeof {{pascalCase name}}> = {
           <Title />
           <Subtitle />
           <Description />
-
           <h2>Usage guidelines</h2>
           <h3>When to use</h3>
           <ul>
-            <li>Use <code>intent="primary"</code> for the main user action.</li>
-            <li>Use <code>intent="secondary"</code> for supporting actions.</li>
+            <li>Used to select a single state from multiple options.</li>
+            <li>Use when you want visible, easily comparable choices.</li>
           </ul>
-
           <h3>When not to use</h3>
           <ul>
-            <li>Do not use multiple primary actions in the same view.</li>
+            <li>Too many options (prefer Select).</li>
           </ul>
-
           <h2>Design checklist</h2>
           <ul>
-            <li>Labels should use verbs.</li>
-            <li>Use loading for async actions.</li>
-            <li>Keep sizes consistent.</li>
+            <li>Use clear, concise labels.</li>
+            <li>Group related options together.</li>
+            <li>Use disabled for unavailable options.</li>
           </ul>
-
           <h2>Playground</h2>
           <DocsPrimary />
-
           <h2>Variables</h2>
           <Controls />
-
           <Stories />
         </>
       ),
-
       source: {
-        type: 'dynamic',
-        transform: (_code, ctx) => {
-          const a = ctx.args as StoryArgs;
+        type: "dynamic",
+        transform: (_code: string, ctx: any) => {
+          const a = ctx.args as Args;
           const props: string[] = [];
-
-          props.push(`intent="${a.intent}"`);
-
-          if (a.size !== 'middle') props.push(`size="${a.size}"`);
-          if (a.loading) props.push('loading');
-          if (a.disabled) props.push('disabled');
-          if (a.isRounded) props.push('isRounded');
-          if (a.fullWidth) props.push('fullWidth');
-
-          if (a.iconChoice !== 'None') {
-            const icon =
-              a.iconChoice === 'Plus'
-                ? '<PlusOutlined />'
-                : '<DownloadOutlined />';
-            props.push(`icon={${icon}}`);
-          }
-
-          return `<{{name}} ${props.join(' ')}>${a.children}</{{name}}>`;
+          if (a.checked) props.push("checked");
+          if (a.disabled) props.push("disabled");
+          if (a.value !== undefined) props.push(`value={${JSON.stringify(a.value)}}`);
+          if (a.defaultChecked) props.push("defaultChecked");
+          return `<{{pascalCase componentName}} ${props.join(" ")}>${a.children}</{{pascalCase componentName}}>`;
         },
       },
     },
   },
-
   argTypes: {
-    children: { control: 'text' },
-
-    intent: {
-      control: 'inline-radio',
-      options: ['primary', 'secondary'],
-    },
-
-    size: {
-      control: 'inline-radio',
-      options: ['small', 'middle', 'large'],
-    },
-
-    loading: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    isRounded: { control: 'boolean' },
-    fullWidth: { control: 'boolean' },
-
-    iconChoice: {
-      name: 'icon',
-      control: 'select',
-      options: ['None', 'Plus', 'Download'],
-      table: {
-        category: 'Storybook',
-        defaultValue: { summary: 'None' },
-      },
-    },
-
-    icon: { table: { disable: true } },
+    checked: { control: "boolean" },
+    disabled: { control: "boolean" },
+    value: { control: "text" },
+    defaultChecked: { control: "boolean" },
+    children: { control: "text" },
   },
-};
+  render: (args: Args) => {
+    // No story-only args to strip
+    return <{{pascalCase componentName}} {...args} />;
+  },
+} satisfies Meta<Args>;
 
 export default meta;
-type Story = StoryObj<typeof {{pascalCase name}}>;
+type Story = StoryObj<typeof meta>;
 
-const renderWithIcon = ({ iconChoice, ...args }: StoryRenderArgs) => (
-  <{{pascalCase name}} {...args} icon={iconMap[iconChoice ?? 'None']} />
-);
-
-/* ================= STORIES ================= */
-
-export const Primary: Story = {
-  args: {
-    children: "Primary {{pascalCase name}}",
-    intent: "primary",
-    size: "middle",
-  },
-  render: renderWithIcon,
-};
-
-export const Secondary: Story = {
-  args: {
-    children: "Secondary {{pascalCase name}}",
-    intent: "secondary",
-  },
-  render: renderWithIcon,
-};
-
-export const WithIcon: Story = {
-  args: {
-    children: "With Icon",
-  },
-  render: renderWithIcon,
-};
-
-export const Loading: Story = {
-  args: {
-    children: "Loading",
-    loading: true,
-  },
-  render: renderWithIcon,
+export const Basic: Story = {
+  args: { children: "Radio" },
 };
 
 export const Disabled: Story = {
-  args: {
-    children: "Disabled",
-    disabled: true,
-  },
-  render: renderWithIcon,
+  args: { children: "Disabled", disabled: true },
 };
 
-export const FullWidth: Story = {
-  args: {
-    children: "Full Width",
-    fullWidth: true,
-  },
-  render: renderWithIcon,
+export const Checked: Story = {
+  args: { children: "Checked", checked: true },
 };
 
+export const DefaultChecked: Story = {
+  args: { children: "Default Checked", defaultChecked: true },
+};
