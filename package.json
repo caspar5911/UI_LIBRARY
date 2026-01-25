@@ -12,6 +12,7 @@
     "plop": "plop --plopfile plop-template/plopfile.cjs"
   },
   "dependencies": {
+    "@ant-design/happy-work-theme": "^2.0.0",
     "@storybook/blocks": "^8.6.15",
     "antd": "^6.2.1",
     "react": "^18.2.0",
