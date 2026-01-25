@@ -1,8 +1,8 @@
 You are performing STORYBOOK STORIES REFACTOR ONLY for <componentName>.
-This prompt MUST be repeatable and MUST NOT assume any prior run.
+Repeatable (idempotent). Do NOT assume any prior run.
 
 SOURCE OF TRUTH (Ant Design):
-<PASTE_ANTD_COMPONENT_URL_HERE>
+https://ant.design/components/button
 
 TARGET FILE (ONLY FILE YOU MAY MODIFY):
 src/components/<componentName>/<componentName>.stories.tsx
@@ -15,9 +15,19 @@ HARD SCOPE:
 - Ignore all other sections (API, etc.).
 - You may ONLY modify the TARGET FILE. If any other file needs changes → FAIL.
 
+DEPENDENCY SAFETY (HARD RULE — PREVENTS THE SAME ISSUE):
+- You MUST NOT add/install packages.
+- You MUST NOT add .d.ts files.
+- You MUST NOT import from any package that is not already present in package.json / node_modules.
+- If an Example requires an external package/theme/provider not already available:
+  - DO NOT replicate it verbatim.
+  - Implement a LOCAL-EQUIVALENT story that demonstrates the same concept using only existing deps.
+  - Mark the story name with "(Adapted)" and include a short comment explaining what dependency was avoided.
+
 MANDATE:
 - You MUST rewrite/merge the TARGET FILE so Storybook stories mirror the docs Examples.
 - This work is NOT complete until coverage reaches TOTAL/TOTAL.
+- Coverage counts adapted stories as covered if they map to a docs Example title.
 
 TEMPLATE (NON-NEGOTIABLE):
 The story file MUST follow my template structure:
@@ -32,13 +42,20 @@ The story file MUST follow my template structure:
 - `docs.source.transform` with `type: "dynamic"` generating JSX from args
 - 1+ story per Example (no placeholder stories)
 
-CHECKS (REQUIRED — MUST OUTPUT):
-A) Extract Example titles from the "Examples" section and compute TOTAL:
-B) Read the CURRENT TARGET FILE and extract current story exports (e.g. `export const X`)
-C) Compute coverage:
-   - coveredExamples: Example titles that have matching stories (title match or clearly mapped)
-   - missingExamples: Example titles not yet represented
-   - coverage: "<coveredCount>/<totalExamples>"
+EXAMPLE IMPLEMENTATION RULES:
+- Each story MUST match the Example’s UI behavior and structure as closely as possible:
+  - same variant intent (primary/dashed/link/text)
+  - same state behavior (loading/disabled/danger)
+  - same layout (group/space)
+  - same icons if already available (e.g. @ant-design/icons)
+- If a visual effect is tied to an unavailable theme/provider:
+  - replicate the behavior concept using built-in props or CSS-in-story ONLY
+  - do not introduce new global CSS files or shared utilities
+
+PRE-FLIGHT CHECK (REQUIRED — BEFORE EDITING):
+- Scan the docs Examples you plan to implement and list any imports/providers/packages they appear to require.
+- Verify each required package exists locally.
+- If missing, plan an adapted implementation.
 
 OUTPUT JSON 1 — EXAMPLES_INDEX:
 {
@@ -47,39 +64,41 @@ OUTPUT JSON 1 — EXAMPLES_INDEX:
   "exampleTitles": ["..."]
 }
 
-OUTPUT JSON 2 — CURRENT_STORIES_INDEX:
+OUTPUT JSON 2 — DEPENDENCY_CHECK:
 {
-  "currentStoryExports": ["..."],
-  "currentStoryCount": <N>
+  "missingDepsDetected": ["<pkgName>", "..."],
+  "examplesNeedingAdaptation": ["<Example title>", "..."]
 }
 
-OUTPUT JSON 3 — COVERAGE:
+OUTPUT JSON 3 — COVERAGE_PLAN:
 {
-  "coveredCount": <X>,
-  "totalExamples": <TOTAL>,
-  "coverage": "<X>/<TOTAL>",
-  "missingExamples": ["..."]
+  "storiesPlanned": [
+    { "exampleTitle": "...", "storyExport": "...", "mode": "exact|adapted" }
+  ]
 }
 
 EXECUTION:
-- If coverage is not TOTAL/TOTAL:
-  - Update the TARGET FILE to add/fix stories so missingExamples are implemented
-  - Keep stories that already correctly match examples
-  - Remove stories that do not correspond to any Example
-- If coverage is already TOTAL/TOTAL:
-  - Still normalize the file to match the template if it deviates
+- Update TARGET FILE to:
+  - add/fix stories for all missing Examples (exact or adapted)
+  - keep correct stories
+  - remove stories that don't map to any Example title
+- If coverage already TOTAL/TOTAL:
+  - still normalize to the template if it deviates
+  - still re-check dependencies and adapt if needed
 
 VALIDATION:
 - Run: npx tsc --noEmit
-- Fix any TS errors caused by story changes until ZERO errors remain.
+- Fix TypeScript errors by changing ONLY the TARGET FILE.
+- If TS errors cannot be fixed without touching other files → FAIL.
 
 CHANGE VERIFICATION:
 - Run: git diff --name-only
-- If coverage was not TOTAL/TOTAL and TARGET FILE is not changed → FAIL
+- If TARGET FILE is not changed when work was required → FAIL
 
 FINAL OUTPUT (JSON ONLY):
 {
   "status": "TYPESCRIPT_CLEAN",
   "component": "<componentName>",
-  "coverage": "<X>/<TOTAL>"
+  "coverage": "<X>/<TOTAL>",
+  "adaptedExamples": ["..."]
 }
