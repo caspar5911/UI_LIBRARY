@@ -1,0 +1,15 @@
+.ui-dropdown {
+  width: 240px;
+}
+
+.my-dropdown-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.my-dropdown-wrapper__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+}
