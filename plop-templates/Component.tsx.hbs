@@ -1,0 +1,31 @@
+import { Button as AntButton } from 'antd';
+import clsx from 'clsx';
+import type { {{name}}Props } from './{{name}}.types';
+import './{{name}}.scss';
+
+/**
+ * Replace the AntButton placeholder code below with your own component and logic
+ * Ensure your component references your props defined in your .types.ts file
+ */
+const {{name}} = ({
+  children,
+  className,
+  intent = 'primary',
+  ...rest
+}: {{name}}Props) => {
+
+  return (
+    <AntButton
+        {...rest}
+        className={clsx(
+          'my-button',
+          `my-button--${intent}`,
+          className
+        )}
+    >
+      {children}
+    </AntButton>
+  );
+};
+
+export default {{name}};

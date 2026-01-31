@@ -1,5 +1,9 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import React from "react";
+import type { Meta, StoryObj } from '@storybook/react';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { useArgs } from '@storybook/preview-api';
+import { PlusOutlined, DownloadOutlined } from '@ant-design/icons';
+import Button from './Button';
+
 import {
   Title,
   Subtitle,
@@ -7,430 +11,414 @@ import {
   Primary as DocsPrimary,
   Controls,
   Stories,
-} from "@storybook/addon-docs/blocks";
-import Button from "./Button";
-import { HappyProvider } from "@ant-design/happy-work-theme";
+} from '@storybook/addon-docs/blocks';
 
-type Args = React.ComponentProps<typeof Button>;
+/**
+ * Storybook-only props (NOT passed to component)
+ * Include props that are used to toggle real props on the component, such as icons, which can only insert React.Components as values
+ * iconChoice is an example, feel free to remove if not in use
+ */
+type StoryOnlyArgs = {
+  iconChoice?: null | 'Plus' | 'Download';
+};
+
+/**
+ * What render() receives
+ */
+type ButtonStoryArgs = React.ComponentProps<typeof Button> & StoryOnlyArgs;
+
+/**
+ * Helper Variables (if any)
+ * START
+ */
+const iconMap = {
+  None: null,
+  Plus: <PlusOutlined />,
+  Download: <DownloadOutlined />,
+} as const;
+// End of Helper Variables
 
 const meta = {
-  title: "Components/Button",
+  title: 'Components/Button',
   component: Button,
+
+  parameters: {
+    docs: {
+      primaryStory: 'Default',
+      page: () => (
+        <>
+          {/* ===== Header ===== */}
+          <Title />
+          <Subtitle>Standard button for triggering actions</Subtitle> 
+          <Description />
+
+          {/* ===== Interactive First ===== */}
+          <h2>Playground</h2>
+          <DocsPrimary />
+
+          <h2>Props</h2>
+          <Controls />
+          <p>For other properties, see Ant Design's <a href='https://ant.design/components/button'>documentation</a> for Button.</p>
+
+          {/* ===== Usage ===== */}
+          <h2>Usage guidelines</h2>
+
+          <h3>When to use</h3>
+          <ul>
+            <li>
+              Use <code>intent="primary"</code> for the <strong>single most important action</strong> in a view or flow.
+            </li>
+            <li>
+              Use <code>intent="secondary"</code> for <strong>supporting actions</strong> such as “Cancel” or “Back”.
+            </li>
+            <li>
+              Use buttons when the action <strong>changes application state</strong>, submits data, or triggers a workflow.
+            </li>
+          </ul>
+
+          <h3>When not to use</h3>
+          <ul>
+            <li>
+              Do not use more than <strong>one primary button</strong> in the same view.
+            </li>
+            <li>
+              Do not use buttons for <strong>navigation-only</strong> actions — use links instead.
+            </li>
+            <li>
+              Avoid using primary buttons for <strong>destructive actions</strong> unless explicitly designed for it.
+            </li>
+          </ul>
+
+          {/* ===== Variants ===== */}
+          <h2>Variants</h2>
+          
+          <h3>Primary</h3>
+          <p>
+            Used for the main call-to-action. Only one primary button should exist per view.
+          </p>
+
+          <h3>Primary Inverse</h3>
+          <p>
+            Used as a second variant to Primary.
+          </p>
+
+          <h3>Secondary</h3>
+          <p>
+            Used for secondary or supporting actions that should not dominate the UI.
+          </p>
+
+          <h3>Secondary Inverse</h3>
+          <p>
+            Used as a second variant to Secondary.
+          </p>
+
+          {/* ===== Design ===== */}
+          <h2>Design checklist</h2>
+          <ul>
+            <li>Button labels should start with a <strong>verb</strong>.</li>
+            <li>Always use <code>loading</code> for async actions.</li>
+            <li>
+              Use <code>disabled</code> only when the action is unavailable —
+              not as a visual state.
+            </li>
+            <li>
+              Keep button sizes consistent within the same UI area.
+            </li>
+          </ul>
+
+          {/* ===== Accessibility ===== */}
+          <h2>Accessibility</h2>
+          <ul>
+            <li>Buttons must have accessible text or <code>aria-label</code>.</li>
+            <li>Disabled buttons should not receive keyboard focus.</li>
+            <li>Loading state must communicate progress to screen readers.</li>
+          </ul>
+
+          {/* ===== Examples ===== */}
+          <h2>Examples</h2>
+          <Stories />
+        </>
+
+      ),
+
+      source: {
+        type: 'dynamic',
+        transform: (_code: string, ctx: any) => {
+          if (ctx.story !== 'Playground') {
+            return _code;
+          }
+          // const a = ctx.args as ButtonStoryArgs;
+          // const props: string[] = [];
+
+          // if (a.intent) props.push(`intent="${a.intent}"`);
+          // if (a.size && a.size !== 'middle') props.push(`size="${a.size}"`);
+          // if (a.loading) props.push('loading');
+          // if (a.disabled) props.push('disabled');
+          // if (a.isRounded) props.push('isRounded');
+          // if (a.fullWidth) props.push('fullWidth');
+          // if (a.iconPlacement) props.push(`iconPlacement="${a.iconPlacement}"`);
+
+          // if (a.iconChoice && a.iconChoice !== 'None') {
+          //   const icon =
+          //     a.iconChoice === 'Plus'
+          //       ? '<PlusOutlined />'
+          //       : '<DownloadOutlined />';
+          //   props.push(`icon={${icon}}`);
+          // }
+
+          // return `<Button ${props.join(' ')}>${a.children}</Button>`;
+        },
+      },
+    },
+  },
+
   args: {
-    children: "Button",
-    type: "default",
-    danger: false,
-    ghost: false,
-    block: false,
-    color: undefined,
-    variant: undefined,
-    icon: undefined,
-    iconPlacement: "start",
-    size: "middle",
+    children: 'Button',
+    intent: 'primary',
+    size: 'middle',
     loading: false,
     disabled: false,
     isRounded: false,
     fullWidth: false,
-    style: undefined,
-    href: undefined,
-    target: undefined,
-    htmlType: "button",
-    autoInsertSpace: true,
-    shape: "default",
+    iconPlacement: undefined,
+    // Storybook-only
+    iconChoice: null,
   },
-  parameters: {
-    docs: {
-      page: () => (
-        <>
-          <Title />
-          <Subtitle />
-          <Description />
-          <h2>Usage guidelines</h2>
-          <h3>When to use</h3>
-          <ul>
-            <li>
-              Use for main actions (primary), secondary actions (default), or
-              less important actions (dashed, text, link).
-            </li>
-            <li>Use color, variant, and icon to communicate intent.</li>
-          </ul>
-          <h3>When not to use</h3>
-          <ul>
-            <li>Do not use for navigation (prefer Link or NavLink).</li>
-            <li>Do not use for non-interactive content.</li>
-          </ul>
-          <h2>Design checklist</h2>
-          <ul>
-            <li>Use clear, concise labels.</li>
-            <li>Group related actions together.</li>
-            <li>Use disabled for unavailable actions.</li>
-          </ul>
-          <h2>Playground</h2>
-          <DocsPrimary />
-          <h2>Variables</h2>
-          <Controls />
-          <Stories />
-        </>
-      ),
-      source: {
-        type: "dynamic",
-        transform: (_code: string, ctx: any) => {
-          const a = ctx.args as Args;
-          const props: string[] = [];
-          if (a.type) props.push(`type=\"${a.type}\"`);
-          if (a.danger) props.push("danger");
-          if (a.ghost) props.push("ghost");
-          if (a.block) props.push("block");
-          if (a.color) props.push(`color=\"${a.color}\"`);
-          if (a.variant) props.push(`variant=\"${a.variant}\"`);
-          if (a.iconPlacement)
-            props.push(`iconPlacement=\"${a.iconPlacement}\"`);
-          if (a.style) props.push("style={...}");
-          if (a.href) props.push(`href=\"${a.href}\"`);
-          if (a.target) props.push(`target=\"${a.target}\"`);
-          if (a.size) props.push(`size=\"${a.size}\"`);
-          if (a.loading) props.push("loading");
-          if (a.disabled) props.push("disabled");
-          if (a.isRounded) props.push("isRounded");
-          if (a.fullWidth) props.push("fullWidth");
-          if (a.icon) props.push("icon={...}");
-          if (a.htmlType) props.push(`htmlType=\"${a.htmlType}\"`);
-          if (a.autoInsertSpace !== undefined)
-            props.push(`autoInsertSpace={${a.autoInsertSpace}}`);
-          if (a.shape) props.push(`shape=\"${a.shape}\"`);
-          return `<Button ${props.join(" ")}>${a.children}</Button>`;
-        },
-      },
-    },
-  },
+
   argTypes: {
-    children: {
-      control: "text",
-      description: "Button label content.",
+    'data-testid': { control: 'text', description: "Used by QA Team for automated testing. This field auto-changes with button text, DO NOT modify unless required to.", table: { category: 'QA Testing' } },
+    children: { 
+      control: 'text',
       table: {
-        type: { summary: "ReactNode" },
-        defaultValue: { summary: '"Button"' },
-        category: "Button",
+        category: 'Common Antd Props',
       },
     },
-    type: {
-      control: "select",
-      options: ["primary", "default", "dashed", "text", "link"],
-      description: "Set button type. Will follow variant & color if provided.",
+    intent: {
+      control: 'inline-radio',
+      options: ['primary', 'secondary', 'primary-inverse', 'secondary-inverse'],
       table: {
-        type: { summary: '"primary" | "default" | "dashed" | "text" | "link"' },
-        defaultValue: { summary: '"default"' },
-        category: "Button",
-      },
-    },
-    danger: {
-      control: "boolean",
-      description: "Set the danger status of button.",
-      table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
-        category: "Button",
-      },
-    },
-    ghost: {
-      control: "boolean",
-      description:
-        "Make background transparent and invert text and border colors.",
-      table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
-        category: "Button",
-      },
-    },
-    block: {
-      control: "boolean",
-      description: "Fit button width to its parent width.",
-      table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
-        category: "Button",
-      },
-    },
-    color: {
-      control: "text",
-      description: "Set button color (preset or custom).",
-      table: {
-        type: { summary: "string" },
-        defaultValue: { summary: "-" },
-        category: "Button",
-      },
-    },
-    variant: {
-      control: "select",
-      options: ["solid", "outlined", "dashed", "filled", "text", "link"],
-      description: "Set button variant.",
-      table: {
-        type: {
-          summary:
-            '"solid" | "outlined" | "dashed" | "filled" | "text" | "link"',
-        },
-        defaultValue: { summary: "-" },
-        category: "Button",
-      },
-    },
-    icon: {
-      control: false,
-      description: "Set the icon component of button.",
-      table: {
-        type: { summary: "ReactNode" },
-        defaultValue: { summary: "-" },
-        category: "Button",
-      },
-    },
-    iconPlacement: {
-      control: "select",
-      options: ["start", "end"],
-      description: "Set the icon position of button.",
-      table: {
-        type: { summary: '"start" | "end"' },
-        defaultValue: { summary: '"start"' },
-        category: "Button",
-      },
-    },
-    style: {
-      control: false,
-      description: "Inline style for the button.",
-      table: {
-        type: { summary: "React.CSSProperties" },
-        defaultValue: { summary: "-" },
-        category: "Button",
-      },
-    },
-    href: {
-      control: "text",
-      description: "Redirect url of link button.",
-      table: {
-        type: { summary: "string" },
-        defaultValue: { summary: "-" },
-        category: "Button",
-      },
-    },
-    target: {
-      control: "text",
-      description:
-        "Same as target attribute of a, works when href is specified.",
-      table: {
-        type: { summary: "string" },
-        defaultValue: { summary: "-" },
-        category: "Button",
+        category: 'Custom Props',
       },
     },
     size: {
-      control: "select",
-      options: ["large", "middle", "small"],
-      description: "Set the size of button.",
+      control: 'inline-radio',
+      options: ['small', 'middle', 'large'],
       table: {
-        type: { summary: '"large" | "middle" | "small"' },
-        defaultValue: { summary: '"middle"' },
-        category: "Button",
+        category: 'Common Antd Props',
       },
     },
-    loading: {
-      control: "boolean",
-      description: "Set the loading status of button.",
+    loading: { 
+      control: 'boolean', 
       table: {
-        type: { summary: "boolean | { delay: number, icon: ReactNode }" },
-        defaultValue: { summary: "false" },
-        category: "Button",
+        category: 'Common Antd Props',
       },
     },
-    disabled: {
-      control: "boolean",
-      description: "Disabled state of button.",
+    disabled: { 
+      control: 'boolean',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
-        category: "Button",
+        category: 'Common Antd Props',
       },
     },
-    isRounded: {
-      control: "boolean",
-      description: "Set border radius to rounded.",
+    isRounded: { 
+      control: 'boolean',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
-        category: "Button",
+        category: 'Custom Props',
       },
     },
-    fullWidth: {
-      control: "boolean",
-      description: "Set width to 100%.",
+    fullWidth: { 
+      control: 'boolean',
       table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "false" },
-        category: "Button",
+        category: 'Custom Props',
       },
     },
-    htmlType: {
-      control: "select",
-      options: ["button", "submit", "reset"],
-      description: "Set the original html type of button.",
+    iconPlacement: { 
+      control: 'inline-radio',
+      options: ['start', 'end'],
       table: {
-        type: { summary: '"button" | "submit" | "reset"' },
-        defaultValue: { summary: '"button"' },
-        category: "Button",
+        category: 'Common Antd Props',
       },
     },
-    autoInsertSpace: {
-      control: "boolean",
-      description: "Add a space between two Chinese characters by default.",
-      table: {
-        type: { summary: "boolean" },
-        defaultValue: { summary: "true" },
-        category: "Button",
-      },
-    },
-    shape: {
-      control: "select",
-      options: ["default", "circle", "round"],
-      description: "Set button shape.",
-      table: {
-        type: { summary: '"default" | "circle" | "round"' },
-        defaultValue: { summary: '"default"' },
-        category: "Button",
-      },
-    },
-    // classNames/styles intentionally omitted from argTypes (not allowed as extra keys)
-  },
-  render: (args: Args) => <Button {...args} />,
-} satisfies Meta<Args>;
 
-// Playground story with surfaceMode control
+    /**
+     * Storybook-only control
+     * These variables do not exist on the component but are mainly used for testing variables on the component that use other React components, such as custom icons
+     */
+    iconChoice: {
+      name: 'icon',
+      control: 'select',
+      options: ['null', 'Plus', 'Download'],
+      table: { 
+        category: 'Common Antd Props',
+        defaultValue: { summary: 'null' } 
+      },
+    },
 
-export const Playground = (props: Args) => <Button {...props} />;
+    /**
+     * Hide real props
+     * This is to hide real props on the object that you do not want users to change directly, such as props that you are overriding
+     */
+    icon: { table: { disable: true } },
+  }
+} satisfies Meta<ButtonStoryArgs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<ButtonStoryArgs>;
 
-// --- Ant Design Button Examples ---
-export const PrimaryButton: Story = {
-  name: "Primary Button",
-  args: { type: "primary", children: "Primary" },
-};
+/**
+ * Helper Functions for Rendering Stories
+ */
 
-export const DefaultButton: Story = {
-  name: "Default Button",
-  args: { type: "default", children: "Default" },
-};
+function toTestId(label: string) {
+  const slug = label
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-_]/g, '');
+  return `btn-${slug || 'button'}`;
+}
 
-export const DashedButton: Story = {
-  name: "Dashed Button",
-  args: { type: "dashed", children: "Dashed" },
-};
+const renderButtonWithIcon = ({ iconChoice, ...args }: ButtonStoryArgs) => (
+  <Button
+    {...args}
+    icon={iconMap[iconChoice ?? 'None']}
+  />
+)
 
-export const TextButton: Story = {
-  name: "Text Button",
-  args: { type: "text", children: "Text" },
-};
+const renderButtonGroup = (
+  buttons: Array<Partial<React.ComponentProps<typeof Button>>>
+) => ({ iconChoice, ...args }: ButtonStoryArgs) => (
+  <div style={{ display: 'flex', gap: 12 }}>
+    {buttons.map((buttonProps, index) => (
+      <Button
+        key={index}
+        {...args}
+        {...buttonProps}
+        icon={iconMap[iconChoice ?? 'None']}
+      />
+    ))}
+  </div>
+);
 
-export const LinkButton: Story = {
-  name: "Link Button",
-  args: { type: "link", children: "Link", href: "https://ant.design" },
-};
+/* ================= STORIES ================= */
 
-export const ColorVariant: Story = {
-  name: "Color & Variant",
-  args: { color: "purple", variant: "outlined", children: "Color & Variant" },
-};
+// You can customize how you would like to render out your components in your stories using helper functions.
+// Insert your helper function calls under the "render" property, and use "args" property to pass the properties to your helper function
 
-export const Icon: Story = {
-  name: "Icon",
+export const Default: Story = {
   args: {
-    icon: (
-      <span role="img" aria-label="star">
-        ★
-      </span>
-    ),
-    children: "Icon",
+
+  },
+  render: () => {
+    // The below code will ensure that data-test-id is set for the Default playground storybook
+    // Only applies to Default (Playground Storybook)
+    const [args, updateArgs] = useArgs<ButtonStoryArgs>();
+    // ✅ label drives the auto id
+    const label = typeof args.children === 'string' ? args.children : 'button';
+    const nextAuto = useMemo(() => toTestId(label), [label]);
+    // ✅ track the last auto-generated value so overrides are respected
+    const lastAuto = useRef<string | null>(null); // NOTE: Set to the default value when first loaded
+    useEffect(() => {
+      const current = (args as any)['data-testid'];
+      // Only auto-update when the user hasn't overridden:
+      // - it's blank, OR
+      // - it equals the previous auto-generated value
+      if (!current || current === lastAuto.current) {
+        lastAuto.current = nextAuto;
+        updateArgs({ 'data-testid': nextAuto } as any);
+      }
+    }, [nextAuto, updateArgs]); // depends only on label changes
+
+    // ✅ pass ALL args through (type/size/loading/etc included)
+    return <Button {...args} />;
   },
 };
 
-export const IconPlacement: Story = {
-  name: "Icon Placement",
+export const Primary: Story = {
   args: {
-    icon: (
-      <span role="img" aria-label="star">
-        ★
-      </span>
-    ),
-    iconPlacement: "end",
-    children: "Icon End",
+    children: 'Button',
+    intent: 'primary',
+    size: 'middle',
   },
+  render: renderButtonWithIcon,
 };
 
-export const Size: Story = {
-  name: "Size",
-  args: { size: "large", children: "Large" },
+export const PrimaryInverse: Story = {
+  args: {
+    children: 'Button',
+    intent: 'primary-inverse',
+  },
+  render: renderButtonWithIcon,
 };
 
-export const Disabled: Story = {
-  name: "Disabled",
-  args: { disabled: true, children: "Disabled" },
+export const Secondary: Story = {
+  args: {
+    children: 'Button',
+    intent: 'secondary',
+  },
+  render: renderButtonWithIcon,
+};
+
+export const SecondaryInverse: Story = {
+  args: {
+    children: 'Button',
+    intent: 'secondary-inverse',
+  },
+  render: renderButtonWithIcon,
+};
+
+export const WithIcon: Story = {
+  args: {
+    children: 'Button',
+    iconChoice: "Plus",
+  },
+  render: renderButtonGroup([
+    { intent: 'primary'},
+    { intent: 'primary-inverse'},
+    { intent: 'secondary'},
+    { intent: 'secondary-inverse'},
+  ]),
+  parameters: {
+    controls: { disable: true },
+  },
 };
 
 export const Loading: Story = {
-  name: "Loading",
-  args: { loading: true, children: "Loading" },
-};
-
-export const MultipleButtons: Story = {
-  name: "Multiple Buttons",
-  render: () => (
-    <>
-      <Button type="primary">Primary</Button>
-      <Button type="default">Default</Button>
-      <Button type="dashed">Dashed</Button>
-    </>
-  ),
-};
-
-export const GhostButton: Story = {
-  name: "Ghost Button",
-  args: { ghost: true, children: "Ghost" },
-};
-
-export const DangerButtons: Story = {
-  name: "Danger Buttons",
-  args: { danger: true, children: "Danger" },
-};
-
-export const BlockButton: Story = {
-  name: "Block Button",
-  args: { block: true, children: "Block" },
-};
-
-export const GradientButton: Story = {
-  name: "Gradient Button",
   args: {
-    style: { background: "linear-gradient(90deg, #f00, #00f)" },
-    children: "Gradient",
+    children: 'Button',
+    loading: true,
+  },
+  render: renderButtonGroup([
+    { intent: 'primary', loading: true},
+    { intent: 'primary-inverse', loading: true},
+    { intent: 'secondary', loading: true},
+    { intent: 'secondary-inverse', loading: true},
+  ]),
+  parameters: {
+    controls: { disable: true },
   },
 };
 
-export const CustomWave: Story = {
-  name: "Custom Wave",
-  render: (args) => (
-    <HappyProvider>
-      <Button {...args}>Wave</Button>
-    </HappyProvider>
-  ),
-};
-
-export const CustomDisabledBg: Story = {
-  name: "Custom disabled backgroundColor",
+export const Disabled: Story = {
   args: {
+    children: 'Disabled',
     disabled: true,
-    style: { backgroundColor: "#eee" },
-    children: "Disabled BG",
+  },
+  render: renderButtonWithIcon,
+};
+
+export const FullWidth: Story = {
+  args: {
+    children: 'Full Width',
+    fullWidth: true,
+  },
+  render: renderButtonGroup([
+    { intent: 'primary'},
+    { intent: 'primary-inverse'},
+    { intent: 'secondary'},
+    { intent: 'secondary-inverse'},
+  ]),
+  parameters: {
+    controls: { disable: true },
   },
 };
 
-export const CustomSemanticDomStyling: Story = {
-  name: "Custom semantic dom styling",
-  args: { children: "Semantic DOM" },
-};

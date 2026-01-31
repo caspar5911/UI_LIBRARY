@@ -1,14 +1,71 @@
-.button {
-  font-family: Inter, sans-serif;
+@use '../../scss/_colors.scss' as *;
 
-  &--primary {
-    background-color: var(--color-primary);
-    color: #000;
+.ant-btn.my-button {
+  padding: 8px 16px;
+  font-family: Inter-Regular;
+
+  > span {
+    font-size: 16px;
   }
 
-  &--secondary {
-    background: transparent;
-    border: 1px solid var(--color-primary);
-    color: var(--color-primary);
+  &:disabled {
+    background-color: $gray-4;
+    color: $gray-7;
+    border-color: $gray-5;
+  }
+}
+
+/* ================= PRIMARY ================= */
+
+.ant-btn.my-button--primary {
+  background-color: $cyan-8;
+  color: $white-1;
+  border: none;
+
+  &:hover:not(:disabled) {
+    background-color: $cyan-9;
+    color: $white-1;
+    border: none;
+  }
+}
+
+/* ================= SECONDARY ================= */
+
+.ant-btn.my-button--secondary {
+  background-color: transparent;
+  border: 1px solid $cyan-8;
+  color: $cyan-8;
+
+  &:hover:not(:disabled) {
+    background-color: $cyan-9;
+    color: $white-1;
+    border-color: $cyan-9;
+  }
+}
+
+/* ================= PRIMARY INVERSE ================= */
+
+.ant-btn.my-button--primary-inverse {
+  background-color: $cyan-7;
+  color: $white-1;
+  border: none;
+  
+  &:hover:not(:disabled) {
+    background-color: $cyan-9;
+    color: $white-1;
+    border: none;
+  }
+}
+
+/* ================= SECONDARY INVERSE ================= */
+
+.ant-btn.my-button--secondary-inverse {
+  background-color: transparent;
+  color: $white-1;
+  
+  &:hover:not(:disabled) {
+    background-color: $cyan-9;
+    color: $white-1;
+    border: none;
   }
 }

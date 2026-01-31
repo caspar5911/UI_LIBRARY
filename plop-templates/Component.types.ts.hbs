@@ -1,0 +1,18 @@
+// NOTE: If you are using an Ant Design component as the base, make sure you extend the necessary props from the Ant Design component.
+
+import { ReactNode } from 'react';
+export type {{name}}Intent = 'primary' | 'secondary';
+
+
+export interface {{name}}Props {
+  /**
+   * Used by QA Team for automated testing. This field auto-changes with button text, DO NOT modify unless required to.
+   */
+  "data-testid": string;
+
+  children: React.ReactNode;
+  iconPlacement: undefined | 'start' | 'end';
+  intent?: {{name}}Intent;
+  loading?: boolean;
+}
+

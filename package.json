@@ -1,32 +1,79 @@
 {
-  "name": "react-vite-storybook-plop",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
+  "name": "my-ui-library",
+  "version": "1.5.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./dist/index.css": "./dist/index.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "publishConfig": {
+    "registry": "https://nexus.dev.net/repository/npm-hosted/"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "ci:smoke-pack": "node ./scripts/smoke-pack.mjs",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "plop": "plop --plopfile plop-template/plopfile.cjs"
+    "plop": "plop",
+    "generate:component": "plop component",
+    "new": "plop component",
+    "build:js": "tsup",
+    "build:css": "sass src:dist --no-source-map",
+    "build": "npm run build:js && npm run build:css",
+    "prepack": "npm run build"
   },
-  "dependencies": {
-    "@ant-design/happy-work-theme": "^2.0.0",
-    "@storybook/blocks": "^8.6.15",
-    "antd": "^6.2.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+  "peerDependencies": {
+    "antd": "^6.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "8.6.15",
-    "@storybook/react-vite": "8.6.15",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@vitejs/plugin-react": "^4.2.0",
-    "plop": "^4.0.0",
-    "sass": "^1.97.3",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.0"
+    "@semantic-release/changelog": "^6.0.1",
+    "@semantic-release/commit-analyzer": "^11.0.0",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^9.0.0",
+    "@semantic-release/npm": "^11.0.0",
+    "@semantic-release/release-notes-generator": "^12.0.0",
+    "@storybook/addon-essentials": "8.6.1",
+    "@storybook/addon-interactions": "8.6.1",
+    "@storybook/addon-links": "8.6.1",
+    "@storybook/blocks": "8.6.1",
+    "@storybook/react-vite": "8.6.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "antd": "^6.1.0",
+    "jsdom": "^26.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sass": "^1.97.2",
+    "semantic-release": "^22.0.0",
+    "storybook": "8.6.1",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "@sigstore/bundle": "^3.1.0",
+    "esbuild": "0.20.2"
+  },
+  "dependencies": {
+    "plop": "^4.0.4"
   }
 }

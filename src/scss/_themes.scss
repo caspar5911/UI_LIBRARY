@@ -1,0 +1,176 @@
+@use 'colors' as *;
+
+// html[data-theme="dark"] {
+//   --background-color: #{$neutral-900};
+//   --color: #{$neutral-0};
+
+//   --primary-color: #{$primary-500};
+//   --secondary-color: #{$neutral-500};
+
+//   --card-background-color: #{$dark-overlay-8};
+//   --card-border-color: #{$neutral-700};
+//   --gridstack-background-image-url: url('/black-bg.png');
+//   --widget-background-color: #{$black-a90};
+//     --widget-secondary-background-color: #{$black-a85};
+
+//   --widget-text-color: #{$neutral-0};
+//     --widget-secondary-text-color: #{$white-a35};
+// }
+
+html  {
+  --widget-top-row-height: 48px;
+  // --background-color: #{$white-2};
+  // --color: #{$black-1};
+
+  // --primary-color: #{$blue-1};
+  // --secondary-color: #{$grey-3};
+
+  // --card-background-color: #{$white-1};
+  // --card-border-color: #{$grey-2};
+  --gridstack-background-color: #f2f2f2;
+  --gridstack-background-image-url: url('/background.png');
+  --widget-background-color: #ffffff;
+  --widget-secondary-background-color: #{$white-a15};
+  --widget-text-color: #{black-1};
+  --widget-secondary-text-color: #{$black-a65};
+  --shell-page-notification-badge-background: #{$green-5};
+
+  --shell-app-top-bar-background-color: #{$gray-1};
+  --shell-app-top-bar-bottom-border-color: #{$gray-6};
+  
+  --shell-app-audit-table-cell-border-color: #{$gray-5};
+  --shell-app-audit-table-header-bg-color: #{$gray-3};
+
+  --shell-app-axon-notif-table-cell-border-color: #{$gray-5};
+  --shell-app-axon-notif-table-header-bg-color: #{$gray-3};
+
+  --shell-app-primary-button-bg-color: #{$cyan-8};
+  --shell-app-primary-button-bg-color-hover: #{$cyan-9};
+  --shell-app-primary-button-bg-color-disabled: #{$gray-3};
+
+  --shell-app-secondary-button-bg-color: #{$gray-1};
+  --shell-app-secondary-button-bg-color-hover: #{$cyan-9};
+  --shell-app-secondary-button-bg-color-disabled: #{$gray-3};
+
+  --shell-app-primary-button-text-color: #{$gray-1};
+  --shell-app-primary-button-text-color-hover: #{$gray-1};
+  --shell-app-primary-button-text-color-disabled: #{$gray-6};
+
+  --shell-app-secondary-button-text-color: #{$gray-11};
+  --shell-app-secondary-button-text-color-hover:#{$gray-1};
+  --shell-app-secondary-button-text-color-disabled: #{$gray-6};
+  --shell-app-secondary-button-border-color: #{$gray-4};
+  --shell-app-secondary-button-border-color-hover : #{$cyan-9};
+
+
+  --shell-app-inverse-primary-button-bg-color: #{$cyan-7};
+  --shell-app-inverse-primary-button-bg-color-hover: #{$cyan-9};
+  --shell-app-inverse-primary-button-bg-color-disabled: #{$gray-3};
+
+  --shell-app-inverse-secondary-button-bg-color: transparent;
+  --shell-app-inverse-secondary-button-bg-color-hover: #{$cyan-9};
+  --shell-app-inverse-secondary-button-bg-color-disabled: transparent;
+
+  --shell-app-inverse-primary-button-text-color: #{$gray-1};
+  --shell-app-inverse-primary-button-text-color-hover: #{$gray-1};
+  --shell-app-inverse-primary-button-text-color-disabled: #{$gray-6};
+
+  --shell-app-inverse-secondary-button-text-color: #{$gray-4};
+  --shell-app-inverse-secondary-button-text-color-hover:#{$gray-1};
+  --shell-app-inverse-secondary-button-text-color-disabled: #{$gray-1};
+  --shell-app-inverse-secondary-button-border-color: #{$gray-1};
+  --shell-app-inverse-secondary-button-border-color-hover : #{$cyan-9};
+
+  --shell-app-checkbox-default-bg-color:#{$gray-1};
+  --shell-app-checkbox-default-border-color:#{$gray-6};
+  --shell-app-checkbox-selected-color: #{$gray-1};
+  --shell-app-checkbox-selected-bg-color:#{$cyan-8};
+  --shell-app-checkbox-selected-border-color:#{$cyan-8};
+  --shell-app-checkbox-disabled-bg-color:#{$gray-6};
+  --shell-app-checkbox-disabled-border-color:#{$gray-6};
+
+  --shell-app-radio-button-default-bg-color:#{$gray-1};
+  --shell-app-radio-button-default-border-color:#{$gray-6};
+  --shell-app-radio-button-selected-dot-color:#{$cyan-8};
+  --shell-app-radio-button-selected-border-color:#{$cyan-8};
+  --shell-app-radio-button-disabled-dot-color:#{$gray-6};
+  --shell-app-radio-button-disabled-border-color:#{$gray-6};
+
+  --shell-app-tag-default-bg-color: #{$gray-1};
+  --shell-app-tag-default-bg-color-hover: #{$gray-3};
+  --shell-app-tag-text-color: #{$gray-11};
+  --shell-app-tag-border-color: #{$gray-5};
+  --shell-app-tag-icon-accent-color:#{$cyan-8};
+
+  --shell-app-tab-item-text-color: #{$gray-6};
+  --shell-app-tab-item-hover-text-color: #{$gray-5};
+  --shell-app-tab-item-selected-text-color: #{$cyan-7};
+  --shell-app-tab-ink-bar-color: #{$cyan-7};
+
+  --shell-app-tooltip-background-color: #{$cyan-9};
+  --shell-app-tooltip-text-color:#{$gray-1};
+
+  --shell-app-input-default-text-color:#{$gray-8};
+  --shell-app-input-default-border-color:#{$gray-6};
+  --shell-app-input-active-text-color:#{$gray-11};
+  --shell-app-input-active-bg-color:#{$gray-1};
+  --shell-app-input-active-border-color:#{$cyan-9};
+  --shell-app-input-hover-bg-color:#{$gray-1};
+  --shell-app-input-hover-border-color:#{$cyan-9};
+  --shell-app-input-hover-text-color:#{$gray-8};
+
+  --shell-app-input-title-text-color: #{$gray-11};
+  --shell-app-input-disabled-bg-color: #{$gray-4};
+  --shell-app-input-disabled-text-color: #{$gray-8};
+  --shell-app-input-disabled-border-color:#{$gray-3};
+  --shell-app-input-error-message-text-color: #{$red-7};
+  --shell-app-input-error-bg-color: #{$red-1};
+  --shell-app-input-error-secondary-color: #{$red-4};
+  --shell-app-input-error-color: #{$red-7};
+  --shell-app-input-success-message-text-color: #{$cyan-8};
+
+  --shell-app-toggle-component-color:#{$cyan-8};
+  --shell-app-dropdown-default-text-color: #{$gray-11};
+  --shell-app-dropdown-hover-bg-color:#{$gray-4};
+  --shell-app-dropdown-selected-text-color:#{$gray-1};
+  --shell-app-dropdown-selected-bg-color:#{$cyan-8};
+  --shell-app-dropdown-menu-border-color: #{$gray-6};
+  --shell-app-dropdown-hover-border-color:#{$cyan-8};
+
+  --shell-app-pagination-active-color: #{$cyan-8};
+  --shell-app-data-table-pagination-border-color: #{$gray-4};
+  --shell-app-tree-list-color-transfer: #{$cyan-4};
+
+  --shell-app-notification-primary-bg-color: #{$blue-1};
+  --shell-app-notification-success-bg-color: #{$cyan-1};
+  --shell-app-notification-warning-bg-color: #{$gold-1};
+  --shell-app-notification-error-bg-color: #{$red-1};
+  --shell-app-notification-primary-border-color: #{$blue-4};
+  --shell-app-notification-success-border-color: #{$cyan-4};
+  --shell-app-notification-warning-border-color: #{$gold-4};
+  --shell-app-notification-error-border-color: #{$red-4};
+   --shell-app-notification-primary-text-color: #{$blue-7};
+  --shell-app-notification-success-text-color: #{$cyan-8};
+  --shell-app-notification-warning-text-color: #{$gold-7};
+  --shell-app-notification-error-text-color: #{$red-7};
+
+  --shell-app-picklist-item-text-color:#{$gray-11};
+  --shell-app-picklist-selected-item:#{$gray-3};
+  --shell-app-picklist-list-border:#{$gray-5};
+
+  --shell-app-accordion-border-color: #{$gray-6};
+  --shell-app-card-light-background-color: #{$cyan-1};
+  --shell-app-card-light-text-color: #{$cyan-9};
+   --shell-app-card-light-secondary-text-color: #{$gray-11};
+   
+
+  --shell-app-blue-text-button-color: #{$blue-5};
+  
+  --shell-app-red-text-button-color: #{$red-5};
+--shell-app-success-badge-text-color: #{$cyan-8};
+--shell-app-success-badge-bg-color: #{$cyan-2};
+--shell-app-error-badge-text-color: #{$red-8};
+--shell-app-error-badge-bg-color: #{$red-2};
+
+--shell-app-red-alert-text-color: #{$red-8};
+}

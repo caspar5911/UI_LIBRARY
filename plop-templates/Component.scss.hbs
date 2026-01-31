@@ -1,0 +1,46 @@
+@use '../../scss/_colors.scss' as *;
+
+// Specify your main classes and variant classes below
+//// Feel free to add, delete or modify the below code for your use case.
+//// If classes do not seem to be applying, try overriding Ant Design's classes while appending your own classes (e.g. .ant-btn.my-button),
+.my-{{lowerCase name}} {
+  padding: 8px 16px;
+  font-family: Inter-Regular;
+
+  > span {
+    font-size: 16px;
+  }
+
+  &:disabled {
+    background-color: $gray-4;
+    color: $gray-7;
+    border-color: $gray-5;
+  }
+}
+
+/* ================= PRIMARY ================= */
+
+.my-{{lowerCase name}}--primary {
+  background-color: $cyan-8;
+  color: $white-1;
+  border: none;
+
+  &:hover:not(:disabled) {
+    background-color: $cyan-9;
+    color: $white-1;
+  }
+}
+
+/* ================= SECONDARY ================= */
+
+.my-{{lowerCase name}}--secondary {
+  background-color: transparent;
+  border: 1px solid $cyan-8;
+  color: $cyan-8;
+
+  &:hover:not(:disabled) {
+    background-color: $cyan-9;
+    color: $white-1;
+    border-color: $cyan-9;
+  }
+}

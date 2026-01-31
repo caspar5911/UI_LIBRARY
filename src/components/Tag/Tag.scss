@@ -1,0 +1,72 @@
+@use "../../scss/_colors.scss" as *;
+
+// Specify your main classes and variant classes below
+//// Feel free to add, delete or modify the below code for your use case.
+//// If classes do not seem to be applying, try overriding Ant Design's classes while appending your own classes (e.g. .ant-btn.my-button),
+.my-tag {
+  border-radius: 4px;
+  font-family: Inter-Regular;
+
+  > span {
+    font-size: 16px;
+  }
+}
+
+/* ================= PRIMARY ================= */
+
+.my-tag--primary-grey {
+  background-color: $gray-2;
+  border-color: $gray-6;
+  color: $gray-11;
+}
+
+.my-tag--primary-yellow {
+  background-color: $gold-1;
+  border-color: $gold-4;
+  color: $gold-8;
+}
+
+.my-tag--primary-red {
+  background-color: $red-1;
+  border-color: $red-4;
+  color: $red-8;
+}
+
+.my-tag--primary-blue {
+  background-color: $blue-1;
+  border-color: $blue-4;
+  color: #005083;
+}
+
+.my-tag--primary-green {
+  background-color: $cyan-1;
+  border-color: $cyan-8;
+  color: $cyan-8;
+}
+
+/* ================= SECONDARY ================= */
+
+.my-tag--secondary-grey {
+  background-color: $gray-2;
+  color: $gray-11;
+}
+
+.my-tag--secondary-yellow {
+  background-color: $gold-2;
+  color: $gold-8;
+}
+
+.my-tag--secondary-red {
+  background-color: $red-2;
+  color: $red-8;
+}
+
+.my-tag--secondary-blue {
+  background-color: $blue-2;
+  color: #005083;
+}
+
+.my-tag--secondary-green {
+  background-color: $cyan-2;
+  color: $cyan-8;
+}

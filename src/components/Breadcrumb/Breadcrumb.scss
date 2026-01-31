@@ -1,0 +1,12 @@
+@use '../../scss/_colors.scss' as *;
+
+.ant-breadcrumb.my-breadcrumb .ant-breadcrumb-overlay-link > .anticon {
+    display: none;
+}
+.ant-breadcrumb.my-breadcrumb .ant-breadcrumb-link {
+    padding: 4px;
+}
+.ant-breadcrumb.my-breadcrumb .ant-breadcrumb-link:hover {
+    cursor: pointer;
+    background: $gray-3;
+}

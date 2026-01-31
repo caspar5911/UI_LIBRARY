@@ -1,32 +1,33 @@
-export type ButtonType = "primary" | "default" | "dashed" | "text" | "link";
-export type ButtonVariant =
-  | "solid"
-  | "outlined"
-  | "dashed"
-  | "filled"
-  | "text"
-  | "link";
-export type ButtonSize = "large" | "middle" | "small";
+// src/components/Button/Button.types.ts
+import type { ButtonProps as AntdButtonProps } from 'antd';
 
-export interface ButtonProps {
-  children: React.ReactNode;
-  type?: ButtonType;
-  danger?: boolean;
-  ghost?: boolean;
-  block?: boolean;
-  color?: string;
-  variant?: ButtonVariant;
-  icon?: React.ReactNode;
-  iconPlacement?: "start" | "end";
-  size?: ButtonSize;
-  loading?: boolean;
-  disabled?: boolean;
+export type ButtonIntent = 'primary' | 'secondary' | 'primary-inverse' | 'secondary-inverse';
+
+export interface ButtonProps extends AntdButtonProps {
+
+  /**
+   * Used by QA Team for automated testing. This field auto-changes with button text, DO NOT modify unless required to.
+   */
+  "data-testid": string;
+
+  /**
+   * Design-system intent (NOT AntD type)
+   */
+  intent?: ButtonIntent;
+
+  /**
+   * Pill-style button
+   */
   isRounded?: boolean;
+
+  /**
+   * Full-width button (AntD v5 replacement for `block`)
+   */
   fullWidth?: boolean;
-  style?: React.CSSProperties;
-  href?: string;
-  target?: string;
-  htmlType?: "button" | "submit" | "reset";
-  autoInsertSpace?: boolean;
-  shape?: "default" | "circle" | "round";
+
+  /**
+   * Position of the icon relative to the button label.
+   */
+  iconPlacement?: 'start' | 'end';
+
 }
