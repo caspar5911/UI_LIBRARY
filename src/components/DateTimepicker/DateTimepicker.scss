@@ -1,0 +1,53 @@
+@use "../../scss/_colors.scss" as *;
+
+.my-datetimepicker {
+  width: 240px;
+  max-width: 100%;
+}
+
+.my-datetimepicker-popup--green {
+  .ant-picker-footer,
+  .ant-picker-now-btn {
+    color: $cyan-9;
+  }
+
+  .ant-picker-ok .ant-btn {
+    background-color: $cyan-9;
+    border-color: $cyan-9;
+
+    &:hover,
+    &:focus {
+      background-color: $cyan-9;
+      border-color: $cyan-9;
+    }
+  }
+
+  .ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner,
+  .ant-picker-time-panel-cell:hover .ant-picker-time-panel-cell-inner {
+    color: inherit !important;
+    background: $cyan-2 !important;
+    border-radius: 4px;
+  }
+
+  .ant-picker-cell-selected .ant-picker-cell-inner,
+  .ant-picker-cell:hover .ant-picker-cell-inner {
+    color: inherit !important;
+    background: $cyan-2 !important;
+    border-radius: 4px;
+  }
+
+  .ant-picker-cell-today .ant-picker-cell-inner::before {
+    border-color: $cyan-9 !important;
+  }
+}
+
+.my-datetimepicker-wrapper {
+  display: grid;
+  gap: 6px;
+}
+
+.my-datetimepicker-wrapper__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a4a4a;
+}
