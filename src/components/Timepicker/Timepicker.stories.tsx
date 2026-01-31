@@ -2,7 +2,7 @@
 import { useArgs } from "@storybook/preview-api";
 import type { ComponentProps } from "react";
 import { useEffect, useMemo, useRef } from "react";
-import Datepicker from "./Datepicker";
+import Timepicker from "./Timepicker";
 import {
   Title,
   Subtitle,
@@ -12,24 +12,26 @@ import {
   Stories,
 } from "@storybook/addon-docs/blocks";
 
-type Story = StoryObj<typeof Datepicker>;
+type TimepickerStoryArgs = ComponentProps<typeof Timepicker> & {
+  status?: "unset" | "error" | "warning";
+};
+
+type Story = StoryObj<TimepickerStoryArgs>;
 
 const meta = {
-  title: "Components/Datepicker",
-  component: Datepicker,
+  title: "Components/Timepicker",
+  component: Timepicker,
   parameters: {
     docs: {
       description: {
         component:
-          "Datepicker wraps Ant Design's DatePicker to provide a consistent API and QA test hooks while keeping AntD behavior intact.",
+          "Timepicker wraps Ant Design's TimePicker to provide a consistent API and QA test hooks while keeping AntD behavior intact.",
       },
       primaryStory: "WithTitle",
       page: () => (
         <>
           <Title />
-          <Subtitle>
-            Select a single date with optional label variants.
-          </Subtitle>
+          <Subtitle>Select a time using Ant Design’s TimePicker wrapper.</Subtitle>
           <Description />
 
           <h2>Playground</h2>
@@ -37,47 +39,41 @@ const meta = {
 
           <h2>Props</h2>
           <Controls />
-          <p>
-            For other properties, see Ant Design's{" "}
-            <a href="https://ant.design/components/date-picker">
-              documentation
-            </a>{" "}
-            for DatePicker.
-          </p>
+          <p>For other properties, see Ant Design's documentation for TimePicker.</p>
 
           <h2>Usage guidelines</h2>
           <h3>When to use</h3>
           <ul>
-            <li>Picking a single date in forms and filters.</li>
-            <li>When a labeled field helps clarify intent.</li>
-            <li>When the user needs a calendar view to select a date.</li>
+            <li>Scheduling a specific time (meetings, reminders, deadlines).</li>
+            <li>Collecting time inputs in forms or filters.</li>
+            <li>When a clock-based selector is faster than typing.</li>
           </ul>
 
           <h3>When not to use</h3>
           <ul>
-            <li>Choosing a date range (use RangePicker).</li>
-            <li>Entering a free-form or approximate date.</li>
-            <li>Selecting multiple discrete dates.</li>
+            <li>Choosing a time range (use RangePicker).</li>
+            <li>Entering approximate or free-form time.</li>
+            <li>Selecting multiple discrete times.</li>
           </ul>
 
           <h2>Variants</h2>
           <h3>With title</h3>
-          <p>Use when the input needs a visible label above the control.</p>
+          <p>Use when the field needs an explicit label above the control.</p>
 
           <h3>Without title</h3>
-          <p>Use when the label is provided by surrounding UI.</p>
+          <p>Use when the label is provided by surrounding UI or layout context.</p>
 
           <h2>Design checklist</h2>
           <ul>
-            <li>Label uses consistent typography and spacing.</li>
-            <li>Input size matches adjacent fields.</li>
-            <li>Calendar placement does not obscure critical content.</li>
+            <li>Label style matches nearby form fields.</li>
+            <li>Input size aligns with adjacent controls.</li>
+            <li>Popover placement avoids obscuring important content.</li>
           </ul>
 
           <h2>Accessibility</h2>
           <ul>
-            <li>Ensure labels are programmatically associated when needed.</li>
-            <li>Keyboard users can open, navigate, and select dates.</li>
+            <li>Ensure the label is programmatically associated when present.</li>
+            <li>Keyboard users can open the panel and select a time.</li>
             <li>Validation states are announced clearly.</li>
           </ul>
 
@@ -90,7 +86,6 @@ const meta = {
   args: {
     disabled: false,
     autoFocus: false,
-    picker: "date",
     placement: "bottomLeft",
     size: "middle",
     status: undefined,
@@ -98,102 +93,77 @@ const meta = {
     allowClear: true,
     bordered: true,
     inputReadOnly: false,
-    showToday: true,
+    use12Hours: false,
+    showNow: true,
+    popupClassName: "my-timepicker-popup--green",
   },
   argTypes: {
     disabled: {
       control: "boolean",
       description: "Disables the input and prevents opening the picker.",
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "false" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "false" } },
     },
     autoFocus: {
       control: "boolean",
       description: "Focuses the input when the component mounts.",
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "false" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "false" } },
     },
     allowClear: {
       control: "boolean",
       description: "Shows a clear icon to reset the value.",
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "true" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "true" } },
     },
     bordered: {
       control: "boolean",
       description: "Toggles the input border.",
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "true" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "true" } },
     },
     inputReadOnly: {
       control: "boolean",
       description: "Prevents manual typing while still allowing selection.",
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "false" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "false" } },
     },
-    showToday: {
+    use12Hours: {
       control: "boolean",
-      description: "Shows the “Today” quick action in the footer.",
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "true" },
-      },
+      description: "Switches to 12-hour format with AM/PM.",
+      table: { category: "Common Antd Props", defaultValue: { summary: "false" } },
     },
-    picker: {
-      control: "select",
-      description: "Selects the panel type (date, week, month, quarter, year).",
-      options: ["date", "week", "month", "quarter", "year"],
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "date" },
-      },
+    showNow: {
+      control: "boolean",
+      description: "Shows the “Now” quick action in the panel.",
+      table: { category: "Common Antd Props", defaultValue: { summary: "true" } },
     },
     placement: {
       control: "select",
       description: "Positions the dropdown relative to the input.",
       options: ["bottomLeft", "bottomRight", "topLeft", "topRight"],
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "bottomLeft" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "bottomLeft" } },
     },
     size: {
       control: "select",
       description: "Sets the input size.",
       options: ["small", "middle", "large"],
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "middle" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "middle" } },
     },
     status: {
       control: "select",
       description: "Applies validation status styling.",
       options: ["unset", "error", "warning"],
       mapping: { unset: undefined },
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "unset" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "unset" } },
     },
     variant: {
       control: "select",
       description: "Controls the visual style of the input.",
       options: ["outlined", "filled", "borderless"],
-      table: {
-        category: "Common Antd Props",
-        defaultValue: { summary: "outlined" },
-      },
+      table: { category: "Common Antd Props", defaultValue: { summary: "outlined" } },
+    },
+    popupClassName: {
+      control: "select",
+      description: "Applies a class to the time picker popup panel.",
+      options: ["none", "green"],
+      mapping: { none: undefined, green: "my-timepicker-popup--green" },
+      table: { category: "Common Antd Props", defaultValue: { summary: "none" } },
     },
     "data-testid": {
       description: "QA selector used for automated testing.",
@@ -206,12 +176,17 @@ const meta = {
     onChange: { table: { disable: true } },
     value: { table: { disable: true } },
     onOk: { table: { disable: true } },
+    onSelect: { table: { disable: true } },
     locale: { table: { disable: true } },
     dropdownClassName: { table: { disable: true } },
-    popupClassName: { table: { disable: true } },
     popupStyle: { table: { disable: true } },
+    format: { table: { disable: true } },
+    hourStep: { table: { disable: true } },
+    minuteStep: { table: { disable: true } },
+    secondStep: { table: { disable: true } },
+    hideDisabledOptions: { table: { disable: true } },
   },
-} satisfies Meta<typeof Datepicker>;
+} satisfies Meta<TimepickerStoryArgs>;
 
 export default meta;
 
@@ -221,7 +196,7 @@ function toTestId(label: string) {
     .toLowerCase()
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-_]/g, "");
-  return `datepicker-${slug || "datepicker"}`;
+  return `timepicker-${slug || "timepicker"}`;
 }
 
 const useAutoTestId = (label: string) => {
@@ -237,24 +212,17 @@ const useAutoTestId = (label: string) => {
   }, [nextAuto, updateArgs, args]);
 };
 
-const withTitle = (args: ComponentProps<typeof Datepicker>) => (
-  <div className="my-datepicker-wrapper">
-    <span className="my-datepicker-wrapper__title">Title</span>
-    <Datepicker {...args} />
+const withTitle = (args: TimepickerStoryArgs) => (
+  <div className="my-timepicker-wrapper">
+    <span className="my-timepicker-wrapper__title">Title</span>
+    <Timepicker {...args} />
   </div>
 );
 
 export const WithTitle: Story = {
   render: (args) => {
-    useAutoTestId("Title Datepicker");
+    useAutoTestId("Title Timepicker");
     return withTitle(args);
-  },
-};
-
-export const WithoutTitle: Story = {
-  render: (args) => {
-    useAutoTestId("Datepicker");
-    return <Datepicker {...args} />;
   },
 };
 
@@ -262,19 +230,12 @@ export const WithTitleFocused: Story = {
   args: {
     autoFocus: true,
   },
+  parameters: {
+    docs: { disable: true },
+  },
   render: (args) => {
-    useAutoTestId("Title Datepicker");
+    useAutoTestId("Title Timepicker");
     return withTitle(args);
-  },
-};
-
-export const WithoutTitleFocused: Story = {
-  args: {
-    autoFocus: true,
-  },
-  render: (args) => {
-    useAutoTestId("Datepicker");
-    return <Datepicker {...args} />;
   },
 };
 
@@ -283,8 +244,28 @@ export const WithTitleDisabled: Story = {
     disabled: true,
   },
   render: (args) => {
-    useAutoTestId("Title Datepicker");
+    useAutoTestId("Title Timepicker");
     return withTitle(args);
+  },
+};
+
+export const WithoutTitle: Story = {
+  render: (args) => {
+    useAutoTestId("Timepicker");
+    return <Timepicker {...args} />;
+  },
+};
+
+export const WithoutTitleFocused: Story = {
+  args: {
+    autoFocus: true,
+  },
+  parameters: {
+    docs: { disable: true },
+  },
+  render: (args) => {
+    useAutoTestId("Timepicker");
+    return <Timepicker {...args} />;
   },
 };
 
@@ -293,7 +274,7 @@ export const WithoutTitleDisabled: Story = {
     disabled: true,
   },
   render: (args) => {
-    useAutoTestId("Datepicker");
-    return <Datepicker {...args} />;
+    useAutoTestId("Timepicker");
+    return <Timepicker {...args} />;
   },
 };

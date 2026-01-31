@@ -1,0 +1,41 @@
+﻿@use "../../scss/_colors.scss" as *;
+
+.my-timepicker {
+  width: 240px;
+}
+
+.my-timepicker-popup--green {
+  .ant-picker-footer,
+  .ant-picker-now-btn {
+    color: $cyan-9;
+  }
+
+  .ant-picker-ok .ant-btn {
+    background-color: $cyan-9;
+    border-color: $cyan-9;
+
+    &:hover,
+    &:focus {
+      background-color: $cyan-9;
+      border-color: $cyan-9;
+    }
+  }
+
+  .ant-picker-time-panel-cell-selected .ant-picker-time-panel-cell-inner,
+  .ant-picker-time-panel-cell:hover .ant-picker-time-panel-cell-inner {
+    color: inherit !important;
+    background: $cyan-2 !important;
+    border-radius: 4px;
+  }
+}
+
+.my-timepicker-wrapper {
+  display: grid;
+  gap: 6px;
+}
+
+.my-timepicker-wrapper__title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a4a4a;
+}
